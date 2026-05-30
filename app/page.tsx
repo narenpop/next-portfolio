@@ -531,7 +531,7 @@ export default function Home() {
             ref={heroTitleRef}
             className="text-5xl sm:text-7xl md:text-8xl font-bold mb-6 tracking-tight leading-[1.05]"
           >
-            Creative Developer
+            Frontend Developer
           </h1>
           <div
             ref={heroLineRef}
