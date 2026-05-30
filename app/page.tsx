@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { BallBackground } from "@/components/ball-background";
 import { Footer } from "@/components/footer";
 import { LazyImage } from "@/components/lazy-image";
 import gsap from "gsap";
@@ -29,7 +30,6 @@ type Theme = "light" | "dark";
 
 export default function Home() {
   const [theme, setTheme] = useState<Theme>("dark");
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeNav, setActiveNav] = useState<string>("home");
   const [formData, setFormData] = useState({
     name: "",
@@ -55,8 +55,6 @@ export default function Home() {
   const projectCardsRef = useRef<HTMLElement[]>([]);
   const contactRef = useRef<HTMLElement>(null);
   const contactFormRef = useRef<HTMLFormElement>(null);
-  const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const hamburgerRef = useRef<HTMLButtonElement>(null);
   const exploreButtonRef = useRef<HTMLButtonElement>(null);
   const touchButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -66,32 +64,6 @@ export default function Home() {
     skills: skillsRef,
     projects: projectsRef,
     contact: contactRef,
-  };
-
-  const toggleMenu = () => {
-    setIsMenuOpen((open) => !open);
-
-    if (mobileMenuRef.current) {
-      gsap.to(mobileMenuRef.current, {
-        height: isMenuOpen ? 0 : "auto",
-        opacity: isMenuOpen ? 0 : 1,
-        duration: 0.4,
-        ease: isMenuOpen ? "power3.in" : "power3.out",
-      });
-    }
-
-    if (hamburgerRef.current) {
-      const lines = hamburgerRef.current.querySelectorAll(".hamburger-line");
-      if (!isMenuOpen) {
-        gsap.to(lines[0], { rotation: 45, y: 7, duration: 0.35 });
-        gsap.to(lines[1], { opacity: 0, scaleX: 0, duration: 0.25 });
-        gsap.to(lines[2], { rotation: -45, y: -7, duration: 0.35 });
-      } else {
-        gsap.to(lines[0], { rotation: 0, y: 0, duration: 0.35 });
-        gsap.to(lines[1], { opacity: 1, scaleX: 1, duration: 0.25 });
-        gsap.to(lines[2], { rotation: 0, y: 0, duration: 0.35 });
-      }
-    }
   };
 
   useEffect(() => {
@@ -111,15 +83,6 @@ export default function Home() {
   const scrollToSection = (id: string) => {
     const ref = sectionRefs[id];
     setActiveNav(id);
-    setIsMenuOpen(false);
-
-    if (mobileMenuRef.current) {
-      gsap.to(mobileMenuRef.current, {
-        height: 0,
-        opacity: 0,
-        duration: 0.3,
-      });
-    }
 
     if (ref?.current) {
       gsap.to(window, {
@@ -490,7 +453,12 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-300">
+    <div
+      data-scroll-root
+      className="relative flex flex-col min-h-screen text-foreground transition-colors duration-300"
+    >
+      <BallBackground />
+      <div className="relative z-10 flex flex-col min-h-screen">
       <nav
         ref={navRef}
         className="navbar fixed top-0 left-0 right-0 z-50 grid grid-cols-[1fr_auto_1fr] items-center px-6 py-4 md:px-10"
@@ -504,7 +472,7 @@ export default function Home() {
           <span ref={logoRef}>Naren</span>
         </button>
 
-        <ul className="nav-links-center hidden md:flex">
+        <ul className="nav-links-center">
           {NAV_ITEMS.map((item, index) => (
             <li
               key={item.id}
@@ -550,45 +518,13 @@ export default function Home() {
               <path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z" />
             </svg>
           </button>
-
-          <button
-            ref={hamburgerRef}
-            onClick={toggleMenu}
-            className="md:hidden flex flex-col gap-1.5 focus:outline-none p-2"
-            aria-label="Toggle menu"
-            aria-expanded={isMenuOpen}
-          >
-            <span className="hamburger-line block w-6 h-px origin-center" />
-            <span className="hamburger-line block w-6 h-px origin-center" />
-            <span className="hamburger-line block w-6 h-px origin-center" />
-          </button>
         </div>
       </nav>
-
-      <div
-        ref={mobileMenuRef}
-        className="mobile-menu fixed top-[72px] left-0 right-0 md:hidden overflow-hidden z-40"
-        style={{ height: 0, opacity: 0 }}
-      >
-        <ul className="flex flex-col items-center gap-2 py-8">
-          {NAV_ITEMS.map((item) => (
-            <li
-              key={item.id}
-              onClick={() => scrollToSection(item.id)}
-              className={`nav-link w-48 text-center ${
-                activeNav === item.id ? "nav-link-active" : ""
-              }`}
-            >
-              {item.label}
-            </li>
-          ))}
-        </ul>
-      </div>
 
       <section
         ref={heroRef}
         id="home"
-        className="min-h-screen flex items-center justify-center text-center px-6 bg-background"
+        className="min-h-screen flex items-center justify-center text-center px-6"
       >
         <div className="max-w-4xl">
           <h1
@@ -621,7 +557,7 @@ export default function Home() {
       <section
         ref={aboutRef}
         id="about"
-        className="lazy-section min-h-screen flex items-center py-24 px-6 bg-background border-t section-border"
+        className="lazy-section min-h-screen flex items-center py-24 px-6 border-t section-border"
       >
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-4xl sm:text-5xl font-bold mb-6 tracking-tight">
@@ -638,7 +574,7 @@ export default function Home() {
       <section
         ref={skillsRef}
         id="skills"
-        className="lazy-section min-h-screen py-24 px-6 bg-background border-t section-border"
+        className="lazy-section min-h-screen py-24 px-6 border-t section-border"
       >
         <div className="max-w-5xl mx-auto">
           <h2 className="text-4xl sm:text-5xl font-bold mb-4 text-center tracking-tight">
@@ -681,7 +617,7 @@ export default function Home() {
       <section
         ref={projectsRef}
         id="projects"
-        className="lazy-section min-h-screen py-24 px-6 bg-background border-t section-border"
+        className="lazy-section min-h-screen py-24 px-6 border-t section-border"
       >
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl sm:text-5xl font-bold mb-4 text-center tracking-tight">
@@ -741,7 +677,7 @@ export default function Home() {
                       </span>
                     )}
                   </div>
-                  <div className="p-6 bg-card transition-colors">
+                  <div className="p-6 transition-colors">
                     <h3 className="font-bold text-lg mb-2 tracking-tight text-foreground">
                       {project.title}
                     </h3>
@@ -771,7 +707,7 @@ export default function Home() {
       <section
         ref={contactRef}
         id="contact"
-        className="lazy-section min-h-screen flex items-center py-24 px-6 bg-background border-t section-border"
+        className="lazy-section min-h-screen flex items-center py-24 px-6 border-t section-border"
       >
         <div className="max-w-2xl mx-auto w-full">
           <h2 className="text-4xl sm:text-5xl font-bold mb-4 text-center tracking-tight">
@@ -861,6 +797,7 @@ export default function Home() {
       </section>
 
       <Footer />
+      </div>
     </div>
   );
 }
