@@ -13,18 +13,77 @@ gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
 const NAV_ITEMS = [
   { label: "Home", id: "home" },
   { label: "About", id: "about" },
-  { label: "Skills", id: "skills" },
+  { label: "Tech Stack", id: "tech-stack" },
+  { label: "Experience", id: "experience" },
   { label: "Projects", id: "projects" },
   { label: "Contact", id: "contact" },
 ] as const;
 
-const SKILLS = [
-  { name: "React.js", logo: "/skills/react.svg" },
-  { name: "Next.js", logo: "/skills/nextjs.svg" },
-  { name: "Tailwind CSS", logo: "/skills/tailwind.svg" },
-  { name: "Node.js", logo: "/skills/nodejs.svg" },
-  { name: "GSAP", logo: "/skills/gsap.svg" },
+const TECH_STACK = [
+  {
+    category: "Frontend",
+    items: [
+      {
+        name: "React.js",
+        description: "Component-based UI, hooks, and reusable architecture",
+      },
+      {
+        name: "Next.js",
+        description: "App Router, SSR/SSG, and production-ready React apps",
+      },
+      {
+        name: "Tailwind CSS",
+        description: "Utility-first styling for responsive, modern layouts",
+      },
+      {
+        name: "JavaScript",
+        description: "ES6+, DOM APIs, and async programming fundamentals",
+      },
+      {
+        name: "TypeScript",
+        description: "Typed components, safer refactors, and better DX",
+      },
+    ],
+  },
+  {
+    category: "State Management",
+    items: [
+      {
+        name: "Redux Toolkit",
+        description: "Predictable global state with slices and async thunks",
+      },
+      {
+        name: "Context API",
+        description: "Lightweight shared state for theme, auth, and UI flows",
+      },
+    ],
+  },
+  {
+    category: "Tools",
+    items: [
+      { name: "Git", description: "Version control, branching, and clean commit history" },
+      { name: "GitHub", description: "Collaboration, PRs, and portfolio deployment workflows" },
+      { name: "Figma", description: "Design handoff, spacing systems, and UI prototyping" },
+      { name: "Vercel", description: "Fast previews, CI deploys, and edge-ready hosting" },
+    ],
+  },
+  {
+    category: "APIs",
+    items: [
+      { name: "REST APIs", description: "Fetching, caching, and error handling in the UI" },
+      {
+        name: "Google Books API",
+        description: "Search, metadata, and catalog-driven book experiences",
+      },
+      {
+        name: "YouTube embeds",
+        description: "Responsive video embeds and media-rich content sections",
+      },
+    ],
+  },
 ] as const;
+
+const RESUME_URL = "/resume.pdf";
 
 type Theme = "light" | "dark";
 
@@ -49,19 +108,21 @@ export default function Home() {
   const heroLineRef = useRef<HTMLDivElement>(null);
   const heroSubRef = useRef<HTMLParagraphElement>(null);
   const aboutRef = useRef<HTMLElement>(null);
-  const skillsRef = useRef<HTMLElement>(null);
-  const skillCardsRef = useRef<HTMLDivElement[]>([]);
+  const techStackRef = useRef<HTMLElement>(null);
+  const experienceRef = useRef<HTMLElement>(null);
+  const techStackCardsRef = useRef<HTMLElement[]>([]);
   const projectsRef = useRef<HTMLElement>(null);
   const projectCardsRef = useRef<HTMLElement[]>([]);
   const contactRef = useRef<HTMLElement>(null);
   const contactFormRef = useRef<HTMLFormElement>(null);
-  const exploreButtonRef = useRef<HTMLButtonElement>(null);
+  const heroCtaRef = useRef<HTMLDivElement>(null);
   const touchButtonRef = useRef<HTMLButtonElement>(null);
 
   const sectionRefs: Record<string, React.RefObject<HTMLElement | null>> = {
     home: heroRef,
     about: aboutRef,
-    skills: skillsRef,
+    "tech-stack": techStackRef,
+    experience: experienceRef,
     projects: projectsRef,
     contact: contactRef,
   };
@@ -262,22 +323,24 @@ export default function Home() {
         );
       }
 
-      if (exploreButtonRef.current) {
+      if (heroCtaRef.current) {
+        const ctas = heroCtaRef.current.querySelectorAll(".hero-cta");
         gsap.fromTo(
-          exploreButtonRef.current,
+          ctas,
           { opacity: 0, y: 40 },
           {
             opacity: 1,
             y: 0,
             duration: 0.8,
+            stagger: 0.12,
             delay: 1.3,
             ease: "power3.out",
           }
         );
-        addButtonHover(exploreButtonRef.current);
+        ctas.forEach((cta) => addButtonHover(cta as HTMLElement));
       }
 
-      [aboutRef, skillsRef, projectsRef, contactRef].forEach((ref) => {
+      [aboutRef, techStackRef, experienceRef, projectsRef, contactRef].forEach((ref) => {
         if (!ref.current) return;
         const title = ref.current.querySelector("h2");
         const desc = ref.current.querySelector(".section-desc");
@@ -392,7 +455,7 @@ export default function Home() {
         });
       };
 
-      animateCards(skillCardsRef.current);
+      animateCards(techStackCardsRef.current);
       animateCards(projectCardsRef.current);
 
       if (touchButtonRef.current) {
@@ -541,16 +604,28 @@ export default function Home() {
             ref={heroSubRef}
             className="text-lg sm:text-xl text-muted mb-12 max-w-xl mx-auto leading-relaxed"
           >
-            Building refined digital experiences with precision, motion, and
-            monochrome clarity.
+            specializing in React.js, Next.js & Tailwind CSS.
+            I build fast, responsive, and modern web applications focused on clean UI and performance.
           </p>
-          <button
-            ref={exploreButtonRef}
-            onClick={() => scrollToSection("projects")}
-            className="btn-primary px-10 py-4 rounded-none cursor-pointer"
+          <div
+            ref={heroCtaRef}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
-            Explore Work
-          </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("projects")}
+              className="hero-cta btn-primary px-10 py-4 rounded-none cursor-pointer w-full sm:w-auto"
+            >
+              View Projects
+            </button>
+            <a
+              href={RESUME_URL}
+              download="Naren-Resume.pdf"
+              className="hero-cta btn-outline px-10 py-4 rounded-none cursor-pointer w-full sm:w-auto text-center"
+            >
+              Download Resume
+            </a>
+          </div>
         </div>
       </section>
 
@@ -572,44 +647,85 @@ export default function Home() {
       </section>
 
       <section
-        ref={skillsRef}
-        id="skills"
+        ref={techStackRef}
+        id="tech-stack"
         className="lazy-section min-h-screen py-24 px-6 border-t section-border"
       >
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl sm:text-5xl font-bold mb-4 text-center tracking-tight">
-            Skills
+            Tech Stack
           </h2>
-          <p className="section-desc text-muted text-center mb-16 max-w-lg mx-auto">
-            Core technologies I use to design, build, and ship modern web
-            applications.
+          <p className="section-desc text-muted text-center mb-16 max-w-2xl mx-auto">
+            Technologies and tools I use to ship polished frontend products —
+            grouped by how I apply them in real projects.
           </p>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8">
-            {SKILLS.map((skill, index) => (
-              <div
-                key={skill.name}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            {TECH_STACK.map((group, index) => (
+              <article
+                key={group.category}
                 ref={(el) => {
-                  if (el) skillCardsRef.current[index] = el;
+                  if (el) techStackCardsRef.current[index] = el;
                 }}
-                className="skill-card flex flex-col items-center justify-center gap-5 p-8 rounded-none"
+                className="tech-stack-card project-card p-6 md:p-8 rounded-none"
               >
-                <div className="card-icon w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
-                  <LazyImage
-                    src={skill.logo}
-                    alt={`${skill.name} logo`}
-                    width={80}
-                    height={80}
-                    unoptimized
-                    sizes="80px"
-                    className="skill-logo w-full h-full object-contain"
-                  />
-                </div>
-                <span className="text-sm sm:text-base font-semibold tracking-wide text-center uppercase">
-                  {skill.name}
-                </span>
-              </div>
+                <h3 className="tech-stack-category text-lg font-bold tracking-tight mb-6 pb-3 border-b section-border">
+                  {group.category}
+                </h3>
+                <ul className="space-y-5">
+                  {group.items.map((item) => (
+                    <li key={item.name} className="tech-stack-item">
+                      <p className="tech-stack-name font-semibold text-foreground mb-1">
+                        {item.name}
+                      </p>
+                      <p className="tech-stack-desc text-sm text-muted leading-relaxed">
+                        {item.description}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        ref={experienceRef}
+        id="experience"
+        className="lazy-section min-h-screen py-24 px-6 border-t section-border"
+      >
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl sm:text-5xl font-bold mb-4 text-center tracking-tight">
+            Experience
+          </h2>
+          <p className="section-desc text-muted text-center mb-16 max-w-2xl mx-auto">
+            Real roles where I shipped product quality, collaborated with teams, and delivered polished user experiences.
+          </p>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <article className="timeline-card project-card p-6 md:p-8 rounded-none border border-transparent hover:border-accent transition-all">
+              <div className="timeline-header mb-4">
+                <h3 className="text-xl font-bold">Frontend Developer — Outofbox Advertising</h3>
+                <p className="text-sm uppercase tracking-widest text-muted">2020–2022</p>
+              </div>
+              <ul className="timeline-list space-y-3 text-sm text-muted">
+                <li>Built responsive UI using React.js and Tailwind CSS</li>
+                <li>Converted designs into reusable components</li>
+                <li>Worked closely with design and development teams</li>
+              </ul>
+            </article>
+
+            <article className="timeline-card project-card p-6 md:p-8 rounded-none border border-transparent hover:border-accent transition-all">
+              <div className="timeline-header mb-4">
+                <h3 className="text-xl font-bold">Support Analyst — Amazon</h3>
+                <p className="text-sm uppercase tracking-widest text-muted">2019–2019</p>
+              </div>
+              <ul className="timeline-list space-y-3 text-sm text-muted">
+                <li>Solved customer technical issues</li>
+                <li>Improved communication & problem solving</li>
+              </ul>
+            </article>
           </div>
         </div>
       </section>

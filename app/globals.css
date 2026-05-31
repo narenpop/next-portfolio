@@ -16,7 +16,7 @@
   --selection-bg: #ffffff;
   --selection-fg: #000000;
   --logo-filter: brightness(0) invert(1);
-  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-sans: Helvetica, Arial, sans-serif;
 }
 
 [data-theme="light"] {
@@ -293,8 +293,43 @@ body {
 }
 
 .project-card:hover,
-.skill-card:hover {
+.skill-card:hover,
+.tech-stack-card:hover,
+.timeline-card:hover {
   border-color: var(--border-strong);
+}
+
+.timeline-card {
+  background: color-mix(in srgb, var(--card) 80%, transparent);
+}
+
+.timeline-header h3 {
+  font-size: 1.125rem;
+}
+
+.timeline-list {
+  list-style: disc;
+  margin-left: 1rem;
+  color: var(--muted);
+}
+
+.timeline-list li {
+  line-height: 1.75;
+}
+
+.tech-stack-category {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.875rem;
+}
+
+.tech-stack-item {
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--border-hover);
+}
+
+.tech-stack-name {
+  letter-spacing: 0.02em;
 }
 
 .skill-logo {
@@ -303,6 +338,9 @@ body {
 }
 
 .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: var(--accent);
   color: var(--accent-contrast);
   border: 1px solid var(--accent);
@@ -319,9 +357,17 @@ body {
 }
 
 .btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   color: var(--foreground);
   border: 1px solid var(--foreground);
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.875rem;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
